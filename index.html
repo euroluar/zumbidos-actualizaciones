@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Zumbidos — avisos sin palabras para tu gente</title>
+<meta name="description" content="Zumbidos es una app para Android que manda avisos cortos —un emoticono y un nivel de urgencia— a tu gente cercana, por Wi‑Fi o por internet. Con SOS, walkie talkie y chat de plaza. Sin cuenta y cifrada.">
+<meta property="og:title" content="Zumbidos — avisos sin palabras para tu gente">
+<meta property="og:description" content="Un emoticono, un nivel de urgencia y listo. Sin escribir, sin cuenta, cifrado. Para Android.">
+<meta property="og:image" content="img/icono.png">
+<link rel="icon" href="favicon.png">
+<style>
+  @font-face { font-family: "Atkinson"; src: url(fuentes/atkinson-hyperlegible-latin-400-normal.woff2) format("woff2"); font-weight: 400; font-display: swap; }
+  @font-face { font-family: "Atkinson"; src: url(fuentes/atkinson-hyperlegible-latin-700-normal.woff2) format("woff2"); font-weight: 700; font-display: swap; }
+  :root {
+    --amarillo: #FFD60A; --azul: #0B5CAD; --tinta: #15181D; --gris: #5A6270; --papel: #FFFFFF; --cielo: #EAF2FB;
+    --bajo: #22A35A; --medio: #E9A100; --alto: #E2483D; --sos: #C9252C;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; font-family: "Atkinson", system-ui, sans-serif; font-size: 17px; line-height: 1.55; color: var(--tinta); background: var(--papel); }
+  a { color: var(--azul); }
+  :focus-visible { outline: 3px solid var(--azul); outline-offset: 3px; border-radius: 6px; }
+  .ancho { max-width: 1080px; margin: 0 auto; padding: 0 22px; }
+  h1, h2, h3 { line-height: 1.15; margin: 0; }
+  h1 { font-size: clamp(2.3rem, 6vw, 3.6rem); letter-spacing: -0.02em; }
+  h2 { font-size: clamp(1.7rem, 4vw, 2.3rem); letter-spacing: -0.01em; margin-bottom: 14px; }
+  h3 { font-size: 1.2rem; }
+  p { margin: 0 0 12px; max-width: 62ch; }
+
+  /* Barra superior */
+  header.barra { padding: 16px 0; }
+  header.barra .ancho { display: flex; align-items: center; gap: 12px; }
+  header.barra img { width: 40px; height: 40px; }
+  header.barra b { font-size: 1.25rem; }
+  header.barra nav { margin-left: auto; display: flex; gap: 18px; font-weight: 700; }
+  header.barra nav a { text-decoration: none; color: var(--tinta); }
+  @media (max-width: 640px) { header.barra nav a:not(.boton) { display: none; } }
+
+  .boton { display: inline-flex; align-items: center; gap: 10px; min-height: 54px; padding: 0 24px; border-radius: 16px;
+    background: var(--azul); color: #fff !important; font-weight: 700; font-size: 1.05rem; text-decoration: none; border: 0; cursor: pointer; }
+  .boton:hover { background: #094c90; }
+  .boton.chico { min-height: 42px; padding: 0 16px; font-size: .95rem; border-radius: 12px; }
+  .nota { color: var(--gris); font-size: .95rem; }
+
+  /* Portada: la demostración del botón es el centro */
+  .portada { padding: 36px 0 64px; }
+  .portada .ancho { display: grid; grid-template-columns: 1.05fr 1fr; gap: 48px; align-items: center; }
+  @media (max-width: 860px) { .portada .ancho { grid-template-columns: 1fr; gap: 36px; } }
+  .portada p.bajada { font-size: 1.2rem; color: #2B313A; margin: 18px 0 26px; }
+  .acciones { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; }
+
+  .demo { background: var(--cielo); border-radius: 32px; padding: 28px 26px 24px; text-align: center; }
+  .demo .medidor { position: relative; height: 16px; background: #fff; border-radius: 99px; overflow: hidden; }
+  .demo .relleno { position: absolute; inset: 0 auto 0 0; width: 0; background: var(--bajo); }
+  .demo .marca { position: absolute; top: 0; bottom: 0; width: 3px; background: var(--cielo); }
+  .demo .niveles { position: relative; height: 22px; margin-top: 6px; font-size: .85rem; font-weight: 700; color: var(--gris); }
+  .demo .niveles span { position: absolute; }
+  .demo .tecla { margin: 18px auto 14px; width: 210px; height: 210px; border-radius: 40px; background: #fff; border: 5px solid #D5DEE9;
+    display: grid; place-items: center; cursor: pointer; touch-action: none; user-select: none; -webkit-user-select: none;
+    box-shadow: inset 0 -8px 0 rgba(0,0,0,.08); transition: transform .08s; }
+  .demo .tecla img { width: 170px; pointer-events: none; }
+  .demo .tecla.apretada { transform: scale(.96); }
+  .demo .tecla.apretada img { animation: zumbar .12s linear infinite; }
+  .demo .estado { min-height: 28px; font-weight: 700; font-size: 1.1rem; }
+  .demo .ayuda { color: var(--gris); font-size: .95rem; margin-top: 2px; }
+  @keyframes zumbar { 0% { transform: translate(0,0) } 25% { transform: translate(-3px,1px) rotate(-1deg) } 75% { transform: translate(3px,-1px) rotate(1deg) } }
+  @media (prefers-reduced-motion: reduce) { .demo .tecla.apretada img { animation: none; } }
+
+  section { padding: 64px 0; }
+  .fondo-cielo { background: var(--cielo); }
+
+  /* Pasos: es una secuencia real, por eso van numerados */
+  .pasos { list-style: none; padding: 0; margin: 28px 0 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; }
+  @media (max-width: 860px) { .pasos { grid-template-columns: 1fr; } }
+  .pasos li { display: flex; flex-direction: column; gap: 12px; }
+  .pasos .num { font-size: 2.6rem; font-weight: 700; color: var(--azul); line-height: 1; }
+  .pantalla { width: 100%; max-width: 260px; border-radius: 26px; border: 6px solid var(--tinta); background: #fff; display: block; }
+
+  .funciones { display: grid; grid-template-columns: repeat(2, 1fr); gap: 28px 48px; margin-top: 28px; }
+  @media (max-width: 760px) { .funciones { grid-template-columns: 1fr; } }
+  .funciones div { border-left: 4px solid var(--amarillo); padding-left: 16px; }
+  .funciones h3 { margin-bottom: 4px; }
+  .funciones p { color: #2B313A; margin: 0; }
+
+  .sos { background: var(--sos); color: #fff; }
+  .sos .ancho { display: grid; grid-template-columns: 1.2fr 1fr; gap: 48px; align-items: center; }
+  @media (max-width: 860px) { .sos .ancho { grid-template-columns: 1fr; } }
+  .sos ul { padding-left: 20px; margin: 0 0 14px; }
+  .sos li { margin-bottom: 8px; }
+  .sos .pantalla { border-color: #fff; margin: 0 auto; }
+  .sos .aviso { background: rgba(0,0,0,.18); border-radius: 14px; padding: 12px 16px; font-weight: 700; display: inline-block; }
+
+  .instalar ol { padding-left: 22px; max-width: 62ch; }
+  .instalar li { margin-bottom: 10px; }
+
+  details { border-bottom: 1px solid #D5DEE9; padding: 14px 0; max-width: 72ch; }
+  summary { font-weight: 700; cursor: pointer; font-size: 1.05rem; }
+  details p { margin-top: 10px; }
+
+  footer { padding: 36px 0 48px; color: var(--gris); font-size: .95rem; border-top: 1px solid #E3E8EF; }
+  footer .ancho { display: flex; flex-wrap: wrap; gap: 10px 24px; align-items: center; }
+</style>
+</head>
+<body>
+
+<header class="barra">
+  <div class="ancho">
+    <img src="img/icono.png" alt="" width="40" height="40">
+    <b>Zumbidos</b>
+    <nav aria-label="Secciones">
+      <a href="#como">Cómo se usa</a>
+      <a href="#sos">SOS</a>
+      <a href="privacidad.html">Privacidad</a>
+      <a class="boton chico" href="#instalar">Descargar</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="portada">
+    <div class="ancho">
+      <div>
+        <h1>Avisale a tu gente sin escribir una palabra.</h1>
+        <p class="bajada">Zumbidos manda un emoticono y un nivel de urgencia a tus contactos cercanos. Le llega al instante, vibra y aparece encima de todo, por Wi‑Fi o por internet.</p>
+        <div class="acciones">
+          <a class="boton" href="https://github.com/euroluar/zumbidos-actualizaciones/releases/download/ultima/zumbidos.apk">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v12M6 11l6 6 6-6M5 20h14"/></svg>
+            Descargar para Android
+          </a>
+          <span class="nota">Gratis · sin cuenta · sin publicidad</span>
+        </div>
+      </div>
+
+      <div class="demo" aria-labelledby="demo-titulo">
+        <h2 id="demo-titulo" style="font-size:1.15rem;margin-bottom:16px">Probalo: mantené apretado</h2>
+        <div class="medidor" aria-hidden="true"><div class="relleno" id="relleno"></div><span class="marca" style="left:50%"></span><span class="marca" style="left:83.3%"></span></div>
+        <div class="niveles" aria-hidden="true"><span style="left:0">Bajo</span><span style="left:66.6%;transform:translateX(-50%)">Medio</span><span style="right:0">Alto</span></div>
+        <button class="tecla" id="tecla" type="button" aria-describedby="demo-ayuda"><img src="img/zumbido.webp" alt="Botón de zumbido"></button>
+        <div class="estado" id="estado" aria-live="polite">&nbsp;</div>
+        <div class="ayuda" id="demo-ayuda">Un toque es bajo; 3 segundos, medio; 5 segundos, alto. Así se elige en la app.</div>
+      </div>
+    </div>
+  </div>
+
+  <section id="como" class="fondo-cielo">
+    <div class="ancho">
+      <h2>Cómo se usa</h2>
+      <p>Tres pasos, sin teclado. Pensado para avisos rápidos: «llegué», «vení», «te necesito».</p>
+      <ol class="pasos">
+        <li>
+          <span class="num">1</span>
+          <h3>Elegí a quién</h3>
+          <p>Tus contactos aparecen en línea cuando están en tu Wi‑Fi o conectados por internet, con su mensaje de estado.</p>
+          <img class="pantalla" src="img/inicio.webp" alt="Lista de contactos de Zumbidos, agrupados en línea y desconectados" loading="lazy" width="260">
+        </li>
+        <li>
+          <span class="num">2</span>
+          <h3>Elegí el emoticono y mantené apretado</h3>
+          <p>Cuanto más tiempo apretás, más urgente es. Si te arrepentís, deslizá el dedo fuera del botón.</p>
+          <img class="pantalla" src="img/enviar.webp" alt="Pantalla de envío con emoticonos, barra de nivel y botón de zumbido" loading="lazy" width="260">
+        </li>
+        <li>
+          <span class="num">3</span>
+          <h3>Le llega al instante</h3>
+          <p>Vibra, suena y la pantalla tiembla según el nivel. El aviso queda a la vista hasta que responda o lo cierre.</p>
+          <img class="pantalla" src="img/recibir.webp" alt="Aviso de zumbido recibido, con el emoticono grande y el nivel arriba" loading="lazy" width="260">
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <section>
+    <div class="ancho">
+      <h2>Qué más hace</h2>
+      <div class="funciones">
+        <div><h3>Funciona sin internet</h3><p>Entre teléfonos de la misma red Wi‑Fi los zumbidos van directo, de teléfono a teléfono. Internet es opcional, para cuando están lejos.</p></div>
+        <div><h3>Walkie talkie</h3><p>Mantené el botón y hablá: tu contacto te escucha en el momento. No se graba nada.</p></div>
+        <div><h3>Plaza chat</h3><p>Un chat abierto con quienes están cerca, con un alias. Los mensajes no se guardan: duran mientras estés en la plaza.</p></div>
+        <div><h3>Llega aunque la app esté cerrada</h3><p>Con el permiso correspondiente, el aviso aparece encima de cualquier otra app.</p></div>
+        <div><h3>Más de 1.800 emoticonos</h3><p>Los de siempre y algunos propios, como el tereré. Los que más usás quedan a mano.</p></div>
+        <div><h3>Categorías y estados</h3><p>Agrupá a tus contactos en Familia, Amigos o Trabajo, y poné un mensaje de estado como «Manejando».</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="sos" class="sos">
+    <div class="ancho">
+      <div>
+        <h2>SOS para cuando importa</h2>
+        <ul>
+          <li>Llega a tus contactos de emergencia con una sirena que suena hasta que lo atiendan, aunque tengan el teléfono en silencio.</li>
+          <li>Mientras dure, les comparte tu ubicación cada 30 segundos para abrirla en el mapa.</li>
+          <li>Te avisa quién lo vio o respondió, y lo cerrás con «Ya estoy bien».</li>
+          <li>Nadie puede hacerte sonar una sirena sin permiso: cada contacto de emergencia tiene que aceptar.</li>
+        </ul>
+        <p class="aviso">Zumbidos no reemplaza al 911 ni a los servicios de emergencia.</p>
+      </div>
+      <img class="pantalla" src="img/sos.webp" alt="Aviso de SOS recibido, con la ubicación y el botón para abrir el mapa" loading="lazy" width="260">
+    </div>
+  </section>
+
+  <section class="fondo-cielo">
+    <div class="ancho">
+      <h2>Tus datos se quedan en tu teléfono</h2>
+      <p>No hay cuenta ni registro con correo. Tu perfil, tus contactos y tu historial se guardan solo en tu teléfono. Cada zumbido va cifrado de punta a punta y firmado: solo tu contacto lo puede abrir y sabe que viene de vos. Por internet, el servidor solo pasa sobres cerrados que no puede leer.</p>
+      <p><a href="privacidad.html">Leer la política de privacidad</a></p>
+    </div>
+  </section>
+
+  <section id="instalar" class="instalar">
+    <div class="ancho">
+      <h2>Instalarla</h2>
+      <p>Por ahora se instala desde este sitio; estamos preparando la publicación en Google Play.</p>
+      <ol>
+        <li>Desde el teléfono, tocá <a href="https://github.com/euroluar/zumbidos-actualizaciones/releases/download/ultima/zumbidos.apk">Descargar Zumbidos</a>. Si te llegó el enlace por WhatsApp, abrilo en el navegador.</li>
+        <li>Abrí el archivo descargado. Android va a pedir permiso para «instalar apps desconocidas» desde el navegador: aceptalo. Es normal en apps que no vienen de Play.</li>
+        <li>Abrí Zumbidos, creá tu perfil con un nombre y un emoticono, y agregá a tu gente con el código QR.</li>
+      </ol>
+      <p class="nota">Requiere Android 6 o posterior. Las actualizaciones se instalan desde la misma app, en Configuración → Actualizaciones. <a href="https://github.com/euroluar/zumbidos-actualizaciones/releases/tag/ultima">Ver la última versión y sus novedades</a>.</p>
+    </div>
+  </section>
+
+  <section class="fondo-cielo">
+    <div class="ancho">
+      <h2>Preguntas frecuentes</h2>
+      <details><summary>¿Tiene costo?</summary><p>No. Es gratis y no tiene publicidad.</p></details>
+      <details><summary>¿Necesito internet?</summary><p>No, si están en la misma red Wi‑Fi. Con internet activado, también te llegan los zumbidos de contactos que están lejos.</p></details>
+      <details><summary>¿Cómo agrego a alguien?</summary><p>En persona, escaneando su código QR; o pegando el código que te mande. Así nadie te agrega sin que lo sepas.</p></details>
+      <details><summary>¿Hay versión para iPhone?</summary><p>Todavía no. Por ahora es solo para Android.</p></details>
+      <details><summary>¿Qué pasa si pierdo el teléfono?</summary><p>Como todo se guarda en el teléfono, en uno nuevo hay que crear el perfil y volver a agregar a los contactos.</p></details>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="ancho">
+    <span>Zumbidos · hecho en Paraguay</span>
+    <a href="privacidad.html">Privacidad</a>
+    <a href="https://github.com/euroluar/zumbidos-actualizaciones/releases/tag/ultima">Versiones</a>
+    <a href="https://github.com/euroluar/zumbidos-actualizaciones/issues">Contacto y sugerencias</a>
+  </div>
+</footer>
+
+<script>
+  // Demostración del botón: el nivel depende de cuánto se mantiene apretado (igual que en la app).
+  (() => {
+    const tecla = document.getElementById('tecla'), relleno = document.getElementById('relleno'), estado = document.getElementById('estado');
+    const MEDIO = 3000, ALTO = 5000, TOPE = 6000;
+    const niveles = { low: ['Bajo', 'var(--bajo)'], medium: ['Medio', 'var(--medio)'], high: ['Alto', 'var(--alto)'] };
+    const nivel = (ms) => (ms >= ALTO ? 'high' : ms >= MEDIO ? 'medium' : 'low');
+    let inicio = 0, cuadro = 0, apretado = false;
+    const tic = () => {
+      const t = performance.now() - inicio, n = nivel(t);
+      relleno.style.width = Math.min(t / TOPE, 1) * 100 + '%';
+      relleno.style.background = niveles[n][1];
+      estado.textContent = 'Soltá para enviar: ' + niveles[n][0];
+      estado.style.color = niveles[n][1];
+      cuadro = requestAnimationFrame(tic);
+    };
+    const empezar = (e) => { if (apretado) return; e.preventDefault(); apretado = true; inicio = performance.now(); tecla.classList.add('apretada'); cuadro = requestAnimationFrame(tic); };
+    const soltar = () => {
+      if (!apretado) return; apretado = false; cancelAnimationFrame(cuadro); tecla.classList.remove('apretada');
+      const n = nivel(performance.now() - inicio);
+      estado.textContent = '¡Zumbido ' + niveles[n][0].toLowerCase() + ' enviado! (es una demostración)';
+      setTimeout(() => { if (!apretado) { relleno.style.width = '0'; } }, 900);
+    };
+    tecla.addEventListener('pointerdown', (e) => { tecla.setPointerCapture?.(e.pointerId); empezar(e); });
+    tecla.addEventListener('pointerup', soltar);
+    tecla.addEventListener('pointercancel', soltar);
+    tecla.addEventListener('contextmenu', (e) => e.preventDefault());
+    tecla.addEventListener('keydown', (e) => { if ((e.key === ' ' || e.key === 'Enter') && !e.repeat) empezar(e); });
+    tecla.addEventListener('keyup', (e) => { if (e.key === ' ' || e.key === 'Enter') soltar(); });
+  })();
+</script>
+</body>
+</html>

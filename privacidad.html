@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Política de privacidad — Zumbidos</title>
+<meta name="description" content="Zumbidos es una app para Android que manda avisos cortos —un emoticono y un nivel de urgencia— a tu gente cercana, por Wi‑Fi o por internet. Con SOS, walkie talkie y chat de plaza. Sin cuenta y cifrada.">
+<meta property="og:title" content="Zumbidos — avisos sin palabras para tu gente">
+<meta property="og:description" content="Un emoticono, un nivel de urgencia y listo. Sin escribir, sin cuenta, cifrado. Para Android.">
+<meta property="og:image" content="img/icono.png">
+<link rel="icon" href="favicon.png">
+<style>
+  @font-face { font-family: "Atkinson"; src: url(fuentes/atkinson-hyperlegible-latin-400-normal.woff2) format("woff2"); font-weight: 400; font-display: swap; }
+  @font-face { font-family: "Atkinson"; src: url(fuentes/atkinson-hyperlegible-latin-700-normal.woff2) format("woff2"); font-weight: 700; font-display: swap; }
+  :root {
+    --amarillo: #FFD60A; --azul: #0B5CAD; --tinta: #15181D; --gris: #5A6270; --papel: #FFFFFF; --cielo: #EAF2FB;
+    --bajo: #22A35A; --medio: #E9A100; --alto: #E2483D; --sos: #C9252C;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; font-family: "Atkinson", system-ui, sans-serif; font-size: 17px; line-height: 1.55; color: var(--tinta); background: var(--papel); }
+  a { color: var(--azul); }
+  :focus-visible { outline: 3px solid var(--azul); outline-offset: 3px; border-radius: 6px; }
+  .ancho { max-width: 1080px; margin: 0 auto; padding: 0 22px; }
+  h1, h2, h3 { line-height: 1.15; margin: 0; }
+  h1 { font-size: clamp(2.3rem, 6vw, 3.6rem); letter-spacing: -0.02em; }
+  h2 { font-size: clamp(1.7rem, 4vw, 2.3rem); letter-spacing: -0.01em; margin-bottom: 14px; }
+  h3 { font-size: 1.2rem; }
+  p { margin: 0 0 12px; max-width: 62ch; }
+
+  /* Barra superior */
+  header.barra { padding: 16px 0; }
+  header.barra .ancho { display: flex; align-items: center; gap: 12px; }
+  header.barra img { width: 40px; height: 40px; }
+  header.barra b { font-size: 1.25rem; }
+  header.barra nav { margin-left: auto; display: flex; gap: 18px; font-weight: 700; }
+  header.barra nav a { text-decoration: none; color: var(--tinta); }
+  @media (max-width: 640px) { header.barra nav a:not(.boton) { display: none; } }
+
+  .boton { display: inline-flex; align-items: center; gap: 10px; min-height: 54px; padding: 0 24px; border-radius: 16px;
+    background: var(--azul); color: #fff !important; font-weight: 700; font-size: 1.05rem; text-decoration: none; border: 0; cursor: pointer; }
+  .boton:hover { background: #094c90; }
+  .boton.chico { min-height: 42px; padding: 0 16px; font-size: .95rem; border-radius: 12px; }
+  .nota { color: var(--gris); font-size: .95rem; }
+
+  /* Portada: la demostración del botón es el centro */
+  .portada { padding: 36px 0 64px; }
+  .portada .ancho { display: grid; grid-template-columns: 1.05fr 1fr; gap: 48px; align-items: center; }
+  @media (max-width: 860px) { .portada .ancho { grid-template-columns: 1fr; gap: 36px; } }
+  .portada p.bajada { font-size: 1.2rem; color: #2B313A; margin: 18px 0 26px; }
+  .acciones { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; }
+
+  .demo { background: var(--cielo); border-radius: 32px; padding: 28px 26px 24px; text-align: center; }
+  .demo .medidor { position: relative; height: 16px; background: #fff; border-radius: 99px; overflow: hidden; }
+  .demo .relleno { position: absolute; inset: 0 auto 0 0; width: 0; background: var(--bajo); }
+  .demo .marca { position: absolute; top: 0; bottom: 0; width: 3px; background: var(--cielo); }
+  .demo .niveles { position: relative; height: 22px; margin-top: 6px; font-size: .85rem; font-weight: 700; color: var(--gris); }
+  .demo .niveles span { position: absolute; }
+  .demo .tecla { margin: 18px auto 14px; width: 210px; height: 210px; border-radius: 40px; background: #fff; border: 5px solid #D5DEE9;
+    display: grid; place-items: center; cursor: pointer; touch-action: none; user-select: none; -webkit-user-select: none;
+    box-shadow: inset 0 -8px 0 rgba(0,0,0,.08); transition: transform .08s; }
+  .demo .tecla img { width: 170px; pointer-events: none; }
+  .demo .tecla.apretada { transform: scale(.96); }
+  .demo .tecla.apretada img { animation: zumbar .12s linear infinite; }
+  .demo .estado { min-height: 28px; font-weight: 700; font-size: 1.1rem; }
+  .demo .ayuda { color: var(--gris); font-size: .95rem; margin-top: 2px; }
+  @keyframes zumbar { 0% { transform: translate(0,0) } 25% { transform: translate(-3px,1px) rotate(-1deg) } 75% { transform: translate(3px,-1px) rotate(1deg) } }
+  @media (prefers-reduced-motion: reduce) { .demo .tecla.apretada img { animation: none; } }
+
+  section { padding: 64px 0; }
+  .fondo-cielo { background: var(--cielo); }
+
+  /* Pasos: es una secuencia real, por eso van numerados */
+  .pasos { list-style: none; padding: 0; margin: 28px 0 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; }
+  @media (max-width: 860px) { .pasos { grid-template-columns: 1fr; } }
+  .pasos li { display: flex; flex-direction: column; gap: 12px; }
+  .pasos .num { font-size: 2.6rem; font-weight: 700; color: var(--azul); line-height: 1; }
+  .pantalla { width: 100%; max-width: 260px; border-radius: 26px; border: 6px solid var(--tinta); background: #fff; display: block; }
+
+  .funciones { display: grid; grid-template-columns: repeat(2, 1fr); gap: 28px 48px; margin-top: 28px; }
+  @media (max-width: 760px) { .funciones { grid-template-columns: 1fr; } }
+  .funciones div { border-left: 4px solid var(--amarillo); padding-left: 16px; }
+  .funciones h3 { margin-bottom: 4px; }
+  .funciones p { color: #2B313A; margin: 0; }
+
+  .sos { background: var(--sos); color: #fff; }
+  .sos .ancho { display: grid; grid-template-columns: 1.2fr 1fr; gap: 48px; align-items: center; }
+  @media (max-width: 860px) { .sos .ancho { grid-template-columns: 1fr; } }
+  .sos ul { padding-left: 20px; margin: 0 0 14px; }
+  .sos li { margin-bottom: 8px; }
+  .sos .pantalla { border-color: #fff; margin: 0 auto; }
+  .sos .aviso { background: rgba(0,0,0,.18); border-radius: 14px; padding: 12px 16px; font-weight: 700; display: inline-block; }
+
+  .instalar ol { padding-left: 22px; max-width: 62ch; }
+  .instalar li { margin-bottom: 10px; }
+
+  details { border-bottom: 1px solid #D5DEE9; padding: 14px 0; max-width: 72ch; }
+  summary { font-weight: 700; cursor: pointer; font-size: 1.05rem; }
+  details p { margin-top: 10px; }
+
+  footer { padding: 36px 0 48px; color: var(--gris); font-size: .95rem; border-top: 1px solid #E3E8EF; }
+  footer .ancho { display: flex; flex-wrap: wrap; gap: 10px 24px; align-items: center; }
+</style>
+<style>
+  .legal { max-width: 760px; margin: 0 auto; padding: 24px 22px 64px; }
+  .legal h1 { font-size: clamp(2rem, 5vw, 2.6rem); margin-bottom: 8px; }
+  .legal h2 { font-size: 1.35rem; margin: 36px 0 10px; }
+  .legal p, .legal li { max-width: none; }
+  .legal ul { padding-left: 22px; }
+  .legal li { margin-bottom: 8px; }
+  .legal table { border-collapse: collapse; width: 100%; font-size: .97rem; }
+  .legal th, .legal td { text-align: left; vertical-align: top; padding: 10px 8px; border-bottom: 1px solid #E3E8EF; }
+  .legal th { font-weight: 700; }
+</style>
+</head><body>
+<header class="barra"><div class="ancho"><img src="img/icono.png" alt="" width="40" height="40"><b><a href="index.html" style="color:inherit;text-decoration:none">Zumbidos</a></b>
+<nav aria-label="Secciones"><a href="index.html">Inicio</a><a class="boton chico" href="index.html#instalar">Descargar</a></nav></div></header>
+<main class="legal">
+  <h1>Política de privacidad</h1>
+  <p class="nota">Última actualización: 21 de noviembre de 2026</p>
+
+  <p>Zumbidos es una app para Android que manda avisos cortos (un emoticono y un nivel de urgencia) entre personas que se agregaron como contactos. Está pensada para guardar lo mínimo: no tiene cuentas, no pide correo ni número de teléfono, no muestra publicidad y no usa herramientas de análisis ni de seguimiento.</p>
+
+  <h2>Qué se guarda en tu teléfono</h2>
+  <p>Todo esto queda solo en tu teléfono y no se sube a ningún servidor:</p>
+  <ul>
+    <li>Tu perfil: el nombre, el emoticono y el mensaje de estado que elijas.</li>
+    <li>Tus claves de cifrado y de firma, que se crean en el teléfono. La clave de firma nunca sale de la app.</li>
+    <li>Tus contactos (su nombre, emoticono, estado y claves públicas), tus categorías y quiénes son tus contactos de emergencia.</li>
+    <li>El historial de zumbidos, que se borra solo según el plazo que elijas (1 día por defecto, 1 semana, 1 mes o siempre).</li>
+    <li>Tus ajustes.</li>
+  </ul>
+
+  <h2>Qué se comparte y con quién</h2>
+  <table>
+    <tr><th>Qué</th><th>Con quién</th><th>Cómo</th></tr>
+    <tr><td>Tu nombre, emoticono y estado</td><td>Tus contactos</td><td>Firmado, para que nadie pueda hacerse pasar por vos.</td></tr>
+    <tr><td>Los zumbidos que enviás</td><td>Solo el contacto destinatario</td><td>Cifrados de punta a punta: nadie más los puede leer, tampoco el servidor.</td></tr>
+    <tr><td>Tu ubicación</td><td>Solo los contactos de emergencia que aceptaron, y solo mientras dura un SOS que activaste vos</td><td>Cifrada, cada 30 segundos, hasta que cerrás o cancelás el SOS (máximo 2 horas). Fuera de un SOS la app no toma tu ubicación. Lo podés desactivar en Contactos de emergencia.</td></tr>
+    <tr><td>Tu voz</td><td>El contacto con quien usás el walkie talkie</td><td>Cifrada y en el momento, mientras mantenés el botón. No se graba.</td></tr>
+    <tr><td>Tus mensajes en la Plaza chat</td><td>Quienes estén en la plaza en tu misma red Wi‑Fi</td><td>Con el alias que elijas, sin tu nombre ni tus contactos. No se guardan.</td></tr>
+  </table>
+
+  <h2>En la red Wi‑Fi</h2>
+  <p>Para que tus contactos te encuentren, la app anuncia su presencia en la red Wi‑Fi local con un identificador que cambia y que solo tus contactos pueden reconocer. No incluye tu nombre.</p>
+
+  <h2>Por internet</h2>
+  <p>Si activás «Recibir por internet», los zumbidos viajan a través de un servicio de mensajería en tiempo real de Supabase (Supabase, Inc.), que funciona como cartero. Pasa sobres cifrados que no puede abrir y no los guarda. Como cualquier servidor, recibe datos técnicos de la conexión, como la dirección IP y la hora. Para que tus contactos vean si estás en línea, se usa un buzón identificado por un valor derivado de tu clave pública, no por tu nombre.</p>
+  <p>Para buscar actualizaciones, la app consulta las versiones publicadas en GitHub (GitHub, Inc.), que también recibe los datos técnicos de esa conexión.</p>
+
+  <h2>Permisos que pide la app</h2>
+  <ul>
+    <li><b>Notificaciones y mostrar encima de otras apps:</b> para avisarte de un zumbido aunque estés usando otra app.</li>
+    <li><b>Ubicación:</b> solo para compartirla durante un SOS propio.</li>
+    <li><b>Micrófono:</b> solo mientras mantenés el botón del walkie talkie.</li>
+    <li><b>Cámara:</b> solo para escanear el código QR de un contacto. No se guardan imágenes.</li>
+    <li><b>Red y Wi‑Fi, servicio en primer plano, inicio con el teléfono y uso de batería:</b> para seguir recibiendo con la app cerrada.</li>
+    <li><b>Instalar apps:</b> para instalar las actualizaciones que descargás desde Configuración → Actualizaciones.</li>
+  </ul>
+
+  <h2>Borrar tus datos</h2>
+  <p>En Configuración → Borrar todo se eliminan de tu teléfono tu perfil, tus claves, tus contactos y tu historial. Desinstalar la app también los elimina. Como no hay cuentas ni datos guardados en servidores, no queda nada más que borrar. Lo que ya les llegó a tus contactos queda en sus teléfonos, según el plazo de historial de cada uno.</p>
+
+  <h2>Seguridad</h2>
+  <p>Los zumbidos van cifrados con claves que solo tienen los teléfonos de cada par de contactos, y firmados con la clave de quien los envía. El SOS solo hace sonar la sirena en teléfonos de personas que aceptaron ser contactos de emergencia.</p>
+
+  <h2>SOS</h2>
+  <p>Zumbidos no reemplaza al 911 ni a los servicios de emergencia, y no puede garantizar que un aviso llegue: depende de la red, de la batería y de los ajustes de cada teléfono.</p>
+
+  <h2>Cambios y contacto</h2>
+  <p>Si esta política cambia, se actualiza esta página con su fecha. Para consultas o pedidos sobre privacidad, escribinos en <a href="https://github.com/euroluar/zumbidos-actualizaciones/issues">github.com/euroluar/zumbidos-actualizaciones/issues</a>.</p>
+</main>
+<footer><div class="ancho"><span>Zumbidos · hecho en Paraguay</span><a href="index.html">Inicio</a></div></footer>
+</body>
+</html>
