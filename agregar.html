@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Te invitaron a Zumbidos</title>
+<meta name="description" content="Alguien te invitó a Zumbidos: avisos sin palabras para tu gente, por Wi‑Fi o por internet.">
+<meta property="og:title" content="Te invitaron a Zumbidos">
+<meta property="og:description" content="Tocá el enlace para agregar a quien te invitó. Si todavía no tenés la app, te explicamos cómo instalarla.">
+<meta property="og:image" content="img/icono.png">
+<meta name="robots" content="noindex">
+<link rel="icon" href="favicon.png">
+<style>
+  @font-face { font-family: "Atkinson"; src: url(fuentes/atkinson-hyperlegible-latin-400-normal.woff2) format("woff2"); font-weight: 400; font-display: swap; }
+  @font-face { font-family: "Atkinson"; src: url(fuentes/atkinson-hyperlegible-latin-700-normal.woff2) format("woff2"); font-weight: 700; font-display: swap; }
+  :root { --amarillo: #FFD60A; --azul: #0B5CAD; --tinta: #15181D; --gris: #5A6270; --cielo: #EAF2FB; --verde: #22A35A; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: "Atkinson", system-ui, sans-serif; font-size: 17px; line-height: 1.5; color: var(--tinta); background: var(--cielo); }
+  main { max-width: 460px; margin: 0 auto; padding: 28px 20px 40px; }
+  .marca { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 1.15rem; margin-bottom: 22px; }
+  .marca img { width: 36px; height: 36px; }
+  .tarjeta { background: #fff; border-radius: 28px; padding: 28px 22px; text-align: center; }
+  .avatar { width: 112px; height: 112px; margin: 0 auto 14px; border-radius: 32px; background: var(--amarillo);
+    display: grid; place-items: center; font-size: 64px; line-height: 1; }
+  h1 { font-size: 1.7rem; line-height: 1.2; margin: 0 0 8px; }
+  p { margin: 0 0 12px; }
+  .gris { color: var(--gris); font-size: .95rem; }
+  .boton { display: flex; width: 100%; align-items: center; justify-content: center; min-height: 56px; padding: 0 20px; margin-top: 12px;
+    border-radius: 16px; border: 0; background: var(--azul); color: #fff; font: inherit; font-weight: 700; font-size: 1.1rem; text-decoration: none; cursor: pointer; }
+  .boton.verde { background: var(--verde); }
+  .boton.claro { background: #fff; color: var(--azul); border: 2px solid #C9D8EA; }
+  :focus-visible { outline: 3px solid var(--azul); outline-offset: 3px; }
+  ol { text-align: left; padding-left: 22px; margin: 18px 0 0; }
+  ol li { margin-bottom: 8px; }
+  .oculto { display: none; }
+  footer { text-align: center; margin-top: 22px; font-size: .9rem; }
+  footer a { color: var(--azul); }
+</style>
+</head>
+<body>
+<main>
+  <div class="marca"><img src="img/icono.png" alt="">Zumbidos</div>
+
+  <section class="tarjeta" id="invitacion">
+    <div class="avatar" id="avatar" aria-hidden="true">👤</div>
+    <h1 id="titulo">Te invitaron a Zumbidos</h1>
+    <p class="gris" id="bajada">Avisos sin palabras para tu gente: un emoticono y un nivel de urgencia.</p>
+
+    <a class="boton verde" id="abrir" href="#">Agregar en Zumbidos</a>
+    <a class="boton" href="https://github.com/euroluar/zumbidos-actualizaciones/releases/download/ultima/zumbidos.apk">Descargar Zumbidos (Android)</a>
+    <button class="boton claro" id="copiar" type="button">Copiar código</button>
+    <p class="gris oculto" id="copiado" role="status">Código copiado. Pegalo en Zumbidos → Nuevo contacto → Pegar.</p>
+
+    <ol>
+      <li>Si ya tenés Zumbidos, tocá <b>Agregar en Zumbidos</b>.</li>
+      <li>Si no la tenés, descargala e instalala. Después volvé a WhatsApp y tocá el enlace otra vez.</li>
+      <li>Si el botón no abre la app, copiá el código y pegalo en Zumbidos → Nuevo contacto → Pegar.</li>
+    </ol>
+  </section>
+
+  <section class="tarjeta oculto" id="error">
+    <h1>Este enlace no está completo</h1>
+    <p class="gris">Pedile a quien te invitó que te lo mande de nuevo desde Zumbidos → Invitar por WhatsApp.</p>
+    <a class="boton" href="./">Conocer Zumbidos</a>
+  </section>
+
+  <footer><a href="./">Qué es Zumbidos</a> · <a href="privacidad.html">Privacidad</a></footer>
+</main>
+<script>
+(function () {
+  // La invitación viene después del «#»: el navegador no la envía a este servidor.
+  var datos = new URLSearchParams(location.hash.slice(1));
+  var codigo = datos.get('c') || '';
+  var token = datos.get('i') || '';
+  var inv = null;
+  try {
+    if (codigo.indexOf('ZMB1.') === 0) {
+      var b = codigo.slice(5).replace(/-/g, '+').replace(/_/g, '/');
+      b += '==='.slice((b.length + 3) % 4);
+      var bin = atob(b), bytes = new Uint8Array(bin.length);
+      for (var i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+      inv = JSON.parse(new TextDecoder().decode(bytes));
+      if (typeof inv.n !== 'string' || typeof inv.f !== 'string') inv = null;
+    }
+  } catch (e) { inv = null; }
+  if (!/^[A-Za-z0-9_-]{8,32}$/.test(token)) token = '';
+
+  if (!inv) {
+    document.getElementById('invitacion').classList.add('oculto');
+    document.getElementById('error').classList.remove('oculto');
+    return;
+  }
+
+  var nombre = inv.n.replace(/\s+/g, ' ').trim().slice(0, 24);
+  document.getElementById('titulo').textContent = nombre + ' te invitó a Zumbidos';
+  document.title = nombre + ' te invitó a Zumbidos';
+  // Los emoticonos propios de la app (como «:terere:») no existen fuera de ella.
+  if (typeof inv.a === 'string' && inv.a && inv.a.charAt(0) !== ':') document.getElementById('avatar').textContent = inv.a.slice(0, 16);
+
+  var consulta = 'c=' + encodeURIComponent(codigo) + (token ? '&i=' + encodeURIComponent(token) : '');
+  var android = /android/i.test(navigator.userAgent);
+  var abrir = document.getElementById('abrir');
+  abrir.href = android
+    // Sin la app instalada, Chrome va directo a la descarga.
+    ? 'intent://agregar?' + consulta + '#Intent;scheme=zumbidos;package=py.zumbidos.app;S.browser_fallback_url='
+      + encodeURIComponent('https://github.com/euroluar/zumbidos-actualizaciones/releases/download/ultima/zumbidos.apk') + ';end'
+    : 'zumbidos://agregar?' + consulta;
+
+  document.getElementById('copiar').addEventListener('click', function () {
+    var listo = function () { document.getElementById('copiado').classList.remove('oculto'); };
+    if (navigator.clipboard) navigator.clipboard.writeText(codigo).then(listo, listo); else listo();
+  });
+})();
+</script>
+</body>
+</html>
