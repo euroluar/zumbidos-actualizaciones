@@ -117,9 +117,9 @@
 <nav aria-label="Secciones"><a href="index.html">Inicio</a><a class="boton chico" href="index.html#instalar">Descargar</a></nav></div></header>
 <main class="legal">
   <h1>Política de privacidad</h1>
-  <p class="nota">Última actualización: 21 de noviembre de 2026</p>
+  <p class="nota">Última actualización: 27 de noviembre de 2026</p>
 
-  <p>Zumbidos es una app para Android que manda avisos cortos (un emoticono y un nivel de urgencia) entre personas que se agregaron como contactos. Está pensada para guardar lo mínimo: no tiene cuentas, no pide correo ni número de teléfono, no muestra publicidad y no usa herramientas de análisis ni de seguimiento.</p>
+  <p>Zumbidos es una app para Android que manda avisos cortos (un emoticono y un nivel de urgencia), preguntas rápidas, la ubicación y la voz por walkie talkie entre personas que se agregaron como contactos. Está pensada para guardar lo mínimo: no tiene cuentas, no pide correo ni número de teléfono, no muestra publicidad y no usa herramientas de análisis ni de seguimiento.</p>
 
   <h2>Qué se guarda en tu teléfono</h2>
   <p>Todo esto queda solo en tu teléfono y no se sube a ningún servidor:</p>
@@ -127,7 +127,7 @@
     <li>Tu perfil: el nombre, el emoticono y el mensaje de estado que elijas.</li>
     <li>Tus claves de cifrado y de firma, que se crean en el teléfono. La clave de firma nunca sale de la app.</li>
     <li>Tus contactos (su nombre, emoticono, estado y claves públicas), tus categorías y quiénes son tus contactos de emergencia.</li>
-    <li>Lo pasajero: el historial de zumbidos, las solicitudes de contacto, el registro de diagnóstico de la conexión y las invitaciones por enlace que creaste. Todo eso se borra solo según un único plazo que elegís (1 día por defecto, 1 semana, 1 mes o siempre).</li>
+    <li>Lo pasajero: el historial de zumbidos (con las preguntas y sus respuestas), las solicitudes de contacto, el registro de diagnóstico de la conexión y las invitaciones por enlace que creaste. Todo eso se borra solo según un único plazo que elegís (1 día por defecto, 1 semana, 1 mes o siempre).</li>
     <li>Tus ajustes.</li>
   </ul>
 
@@ -136,27 +136,33 @@
     <tr><th>Qué</th><th>Con quién</th><th>Cómo</th></tr>
     <tr><td>Tu nombre, emoticono y estado</td><td>Tus contactos</td><td>Firmado, para que nadie pueda hacerse pasar por vos.</td></tr>
     <tr><td>Los zumbidos que enviás</td><td>Solo el contacto destinatario</td><td>Cifrados de punta a punta: nadie más los puede leer, tampoco el servidor.</td></tr>
-    <tr><td>Tu ubicación</td><td>Solo los contactos de emergencia que aceptaron, y solo mientras dura un SOS que activaste vos</td><td>Cifrada, cada 30 segundos, hasta que cerrás o cancelás el SOS (máximo 2 horas). Fuera de un SOS la app no toma tu ubicación. Lo podés desactivar en Contactos de emergencia.</td></tr>
+    <tr><td>Las preguntas que hacés y las respuestas que das</td><td>Solo el contacto o el grupo al que preguntás, y quien te preguntó</td><td>Cifradas de punta a punta, como los zumbidos.</td></tr>
+    <tr><td>Tu ubicación cuando la mandás («Dónde estoy» o «En vivo»)</td><td>Solo el contacto o el grupo que elegís en ese momento</td><td>Cifrada. «Dónde estoy» manda un solo punto. «En vivo» se actualiza mientras te movés, durante el tiempo que elegís (15 minutos o 1 hora) y se corta sola; mientras dura ves una notificación para detenerla. Nadie puede pedirte la ubicación ni verla si vos no la mandás.</td></tr>
+    <tr><td>Tu ubicación durante un SOS</td><td>Solo los contactos de emergencia que aceptaron, y solo mientras dura un SOS que activaste vos</td><td>Cifrada, cada 30 segundos, hasta que cerrás o cancelás el SOS (máximo 2 horas). Lo podés desactivar en Contactos de emergencia.</td></tr>
     <tr><td>Tu voz</td><td>El contacto con quien usás el walkie talkie</td><td>Cifrada y en el momento, mientras mantenés el botón. No se graba.</td></tr>
     <tr><td>Tu enlace de invitación</td><td>Quien lo reciba (por WhatsApp u otra app que elijas)</td><td>Lleva tu nombre, tu emoticono y tus claves públicas, más un código al azar. Todo va después del «#» del enlace, así que la página de invitación no lo recibe: lo lee tu navegador.</td></tr>
     <tr><td>Tus mensajes en la Plaza chat</td><td>Quienes estén en la plaza en tu misma red Wi‑Fi</td><td>Con el alias que elijas, sin tu nombre ni tus contactos. No se guardan.</td></tr>
   </table>
 
+  <h2>Copia de seguridad</h2>
+  <p>Si exportás una copia (Configuración → Copia de seguridad), la app arma un archivo con tu perfil, tus claves, tus contactos, tus grupos, tus ajustes y tu historial, cifrado con la contraseña que elegís. Vos decidís dónde guardarlo (Drive, WhatsApp, Archivos…); nosotros no lo recibimos ni podemos abrirlo. Quien tenga ese archivo y su contraseña puede usar tu perfil, así que guardalos con cuidado.</p>
+
   <h2>En la red Wi‑Fi</h2>
   <p>Para que tus contactos te encuentren, la app anuncia su presencia en la red Wi‑Fi local con un identificador que cambia y que solo tus contactos pueden reconocer. No incluye tu nombre.</p>
+  <p>Si alguien activa en su teléfono el modo «relé» para su red, ese teléfono solo pasa sobres cifrados entre los teléfonos de esa red: no puede abrirlos ni los guarda.</p>
 
   <h2>Por internet</h2>
   <p>Si activás «Recibir por internet», los zumbidos viajan a través de un servicio de mensajería en tiempo real de Supabase (Supabase, Inc.), que funciona como cartero. Pasa sobres cifrados que no puede abrir y no los guarda. Como cualquier servidor, recibe datos técnicos de la conexión, como la dirección IP y la hora. Para que tus contactos vean si estás en línea, se usa un buzón identificado por un valor derivado de tu clave pública, no por tu nombre.</p>
-  <p>Para buscar actualizaciones, la app consulta las versiones publicadas en GitHub (GitHub, Inc.), que también recibe los datos técnicos de esa conexión.</p>
+  <p>Si instalaste la app desde Google Play, las actualizaciones llegan por Google Play (Google LLC), según su propia política de privacidad. En la versión que se instala desde nuestro enlace, la app consulta las versiones publicadas en GitHub (GitHub, Inc.), que también recibe los datos técnicos de esa conexión.</p>
 
   <h2>Permisos que pide la app</h2>
   <ul>
     <li><b>Notificaciones y mostrar encima de otras apps:</b> para avisarte de un zumbido aunque estés usando otra app.</li>
-    <li><b>Ubicación:</b> solo para compartirla durante un SOS propio.</li>
+    <li><b>Ubicación:</b> solo cuando mandás tu ubicación a alguien o durante un SOS propio. Para «En vivo» y el SOS, el servicio en primer plano sigue tomándola con la pantalla apagada, siempre con una notificación visible.</li>
     <li><b>Micrófono:</b> solo mientras mantenés el botón del walkie talkie.</li>
     <li><b>Cámara:</b> solo para escanear el código QR de un contacto. No se guardan imágenes.</li>
     <li><b>Red y Wi‑Fi, servicio en primer plano, inicio con el teléfono y uso de batería:</b> para seguir recibiendo con la app cerrada.</li>
-    <li><b>Instalar apps:</b> para instalar las actualizaciones que descargás desde Configuración → Actualizaciones.</li>
+    <li><b>Instalar apps:</b> solo en la versión del enlace, para instalar las actualizaciones que descargás desde Configuración → Actualizaciones.</li>
   </ul>
 
   <h2>Borrar tus datos</h2>
